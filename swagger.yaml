@@ -1,718 +1,416 @@
----
-swagger: "2.0"
+openapi: 3.0.0
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API
+    url: 'https://virtserver.swaggerhub.com/CHAIYAPONGAP/PhaseHub/1.0.0'
 info:
-  description: "This is a sample server Petstore server.  You can find out more about\
-    \ Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).\
-    \  For this sample, you can use the api key `special-key` to test the authorization\
-    \ filters."
-  version: "1.0.5"
-  title: "Swagger Petstore"
-  termsOfService: "http://swagger.io/terms/"
+  description: 'This is a PhaseHub API '
+  version: 1.0.0
+  title: PhaseHub API
   contact:
-    email: "apiteam@swagger.io"
+    email: you@your-company.com
   license:
-    name: "Apache 2.0"
-    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-host: "petstore.swagger.io"
-basePath: "/v2"
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
 tags:
-- name: "pet"
-  description: "Everything about your Pets"
-  externalDocs:
-    description: "Find out more"
-    url: "http://swagger.io"
-- name: "store"
-  description: "Access to Petstore orders"
-- name: "user"
-  description: "Operations about user"
-  externalDocs:
-    description: "Find out more about our store"
-    url: "http://swagger.io"
-schemes:
-- "https"
-- "http"
+  - name: products
+    description: API for product
+  - name: cases
+    description: API for case (order)
+  - name: shipments
+    description: API for shipment
 paths:
-  /pet/{petId}/uploadImage:
-    post:
-      tags:
-      - "pet"
-      summary: "uploads an image"
-      description: ""
-      operationId: "uploadFile"
-      consumes:
-      - "multipart/form-data"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "petId"
-        in: "path"
-        description: "ID of pet to update"
-        required: true
-        type: "integer"
-        format: "int64"
-      - name: "additionalMetadata"
-        in: "formData"
-        description: "Additional data to pass to server"
-        required: false
-        type: "string"
-      - name: "file"
-        in: "formData"
-        description: "file to upload"
-        required: false
-        type: "file"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/ApiResponse"
-      security:
-      - petstore_auth:
-        - "write:pets"
-        - "read:pets"
-  /pet:
-    post:
-      tags:
-      - "pet"
-      summary: "Add a new pet to the store"
-      description: ""
-      operationId: "addPet"
-      consumes:
-      - "application/json"
-      - "application/xml"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "Pet object that needs to be added to the store"
-        required: true
-        schema:
-          $ref: "#/definitions/Pet"
-      responses:
-        405:
-          description: "Invalid input"
-      security:
-      - petstore_auth:
-        - "write:pets"
-        - "read:pets"
-    put:
-      tags:
-      - "pet"
-      summary: "Update an existing pet"
-      description: ""
-      operationId: "updatePet"
-      consumes:
-      - "application/json"
-      - "application/xml"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "Pet object that needs to be added to the store"
-        required: true
-        schema:
-          $ref: "#/definitions/Pet"
-      responses:
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "Pet not found"
-        405:
-          description: "Validation exception"
-      security:
-      - petstore_auth:
-        - "write:pets"
-        - "read:pets"
-  /pet/findByStatus:
+  /products:
     get:
+      summary: list products
       tags:
-      - "pet"
-      summary: "Finds Pets by status"
-      description: "Multiple status values can be provided with comma separated strings"
-      operationId: "findPetsByStatus"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "status"
-        in: "query"
-        description: "Status values that need to be considered for filter"
-        required: true
-        type: "array"
-        items:
-          type: "string"
-          enum:
-          - "available"
-          - "pending"
-          - "sold"
-          default: "available"
-        collectionFormat: "multi"
+        - products
       responses:
-        200:
-          description: "successful operation"
-          schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/Pet"
-        400:
-          description: "Invalid status value"
-      security:
-      - petstore_auth:
-        - "write:pets"
-        - "read:pets"
-  /pet/findByTags:
-    get:
-      tags:
-      - "pet"
-      summary: "Finds Pets by tags"
-      description: "Multiple tags can be provided with comma separated strings. Use\
-        \ tag1, tag2, tag3 for testing."
-      operationId: "findPetsByTags"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "tags"
-        in: "query"
-        description: "Tags to filter by"
-        required: true
-        type: "array"
-        items:
-          type: "string"
-        collectionFormat: "multi"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/Pet"
-        400:
-          description: "Invalid tag value"
-      security:
-      - petstore_auth:
-        - "write:pets"
-        - "read:pets"
-      deprecated: true
-  /pet/{petId}:
-    get:
-      tags:
-      - "pet"
-      summary: "Find pet by ID"
-      description: "Returns a single pet"
-      operationId: "getPetById"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "petId"
-        in: "path"
-        description: "ID of pet to return"
-        required: true
-        type: "integer"
-        format: "int64"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/Pet"
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "Pet not found"
-      security:
-      - api_key: []
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    x-stoplight:
+                      id: 9vjhk1zx5incb
+                    properties:
+                      data:
+                        type: array
+                        x-stoplight:
+                          id: 381e2j4dhvj9h
+                        items:
+                          $ref: '#/components/schemas/Product'
+              examples:
+                Success:
+                  value:
+                    message: Request successful
+                    success: true
+                    data:
+                      - code: BCA
+                        name: Brius Clear Aligner
+                        productType: Aligner
+                      - code: OFX
+                        name: OFX-Aligner
+                        productType: Aligner
+                      - code: BCR
+                        name: Brius Clear Retainer (.76)
+                        productType: Retainer
+      operationId: list-products
+  /cases:
+    parameters: []
     post:
+      summary: create a case
       tags:
-      - "pet"
-      summary: "Updates a pet in the store with form data"
-      description: ""
-      operationId: "updatePetWithForm"
-      consumes:
-      - "application/x-www-form-urlencoded"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "petId"
-        in: "path"
-        description: "ID of pet that needs to be updated"
-        required: true
-        type: "integer"
-        format: "int64"
-      - name: "name"
-        in: "formData"
-        description: "Updated name of the pet"
-        required: false
-        type: "string"
-      - name: "status"
-        in: "formData"
-        description: "Updated status of the pet"
-        required: false
-        type: "string"
+        - cases
+      requestBody:
+        description: Case to add
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Case'
+            examples: {}
       responses:
-        405:
-          description: "Invalid input"
-      security:
-      - petstore_auth:
-        - "write:pets"
-        - "read:pets"
-    delete:
-      tags:
-      - "pet"
-      summary: "Deletes a pet"
-      description: ""
-      operationId: "deletePet"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "api_key"
-        in: "header"
-        required: false
-        type: "string"
-      - name: "petId"
-        in: "path"
-        description: "Pet id to delete"
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    x-stoplight:
+                      id: zx60yyddnp9yb
+                    properties:
+                      data:
+                        type: object
+                        x-stoplight:
+                          id: h180illrktgh1
+                        properties:
+                          referenceId:
+                            type: string
+                            x-stoplight:
+                              id: bpxy7mhp137oo
+                            example: dfghj2bf9cs56fgsd
+              examples: {}
+        '400':
+          description: 'invalid input, object invalid'
+      operationId: create-case
+      description: create a case to the system
+  '/cases/{referenceId}/upload':
+    parameters:
+      - schema:
+          type: string
+          example: dfghj2bf9cs56fgsd
+        name: referenceId
+        in: path
         required: true
-        type: "integer"
-        format: "int64"
-      responses:
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "Pet not found"
-      security:
-      - petstore_auth:
-        - "write:pets"
-        - "read:pets"
-  /store/order:
     post:
+      summary: upload STL file
       tags:
-      - "store"
-      summary: "Place an order for a pet"
-      description: ""
-      operationId: "placeOrder"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "order placed for purchasing the pet"
+        - cases
+      responses:
+        '200':
+          description: file upoaded
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+              examples: {}
+        '400':
+          description: 'invalid input, object or file invalid'
+        '404':
+          description: case not found
+      operationId: upload-file
+      description: upload .stl file
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                stepType:
+                  type: string
+                  example: maxilla
+                step:
+                  type: string
+                  example: 1-0
+                file:
+                  type: string
+                  format: binary
+            encoding:
+              stlFile:
+                contentType: 'application/octet-stream, application/zip'
+  '/cases/{referenceId}/submit':
+    parameters:
+      - schema:
+          type: string
+          example: dfghj2bf9cs56fgsd
+        name: referenceId
+        in: path
         required: true
-        schema:
-          $ref: "#/definitions/Order"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/Order"
-        400:
-          description: "Invalid Order"
-  /store/order/{orderId}:
-    get:
-      tags:
-      - "store"
-      summary: "Find purchase order by ID"
-      description: "For valid response try integer IDs with value >= 1 and <= 10.\
-        \ Other values will generated exceptions"
-      operationId: "getOrderById"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "orderId"
-        in: "path"
-        description: "ID of pet that needs to be fetched"
-        required: true
-        type: "integer"
-        maximum: 10
-        minimum: 1
-        format: "int64"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/Order"
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "Order not found"
-    delete:
-      tags:
-      - "store"
-      summary: "Delete purchase order by ID"
-      description: "For valid response try integer IDs with positive integer value.\
-        \ Negative or non-integer values will generate API errors"
-      operationId: "deleteOrder"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "orderId"
-        in: "path"
-        description: "ID of the order that needs to be deleted"
-        required: true
-        type: "integer"
-        minimum: 1
-        format: "int64"
-      responses:
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "Order not found"
-  /store/inventory:
-    get:
-      tags:
-      - "store"
-      summary: "Returns pet inventories by status"
-      description: "Returns a map of status codes to quantities"
-      operationId: "getInventory"
-      produces:
-      - "application/json"
-      parameters: []
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            type: "object"
-            additionalProperties:
-              type: "integer"
-              format: "int32"
-      security:
-      - api_key: []
-  /user/createWithArray:
     post:
+      summary: submit the case
       tags:
-      - "user"
-      summary: "Creates list of users with given input array"
-      description: ""
-      operationId: "createUsersWithArrayInput"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "List of user object"
+        - cases
+      responses:
+        '200':
+          description: case submitted
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+              examples: {}
+        '400':
+          description: 'invalid input, object invalid'
+        '404':
+          description: case not found
+      operationId: submit-case
+      description: submit the case
+  '/shipments/{caseId}':
+    parameters:
+      - schema:
+          type: string
+        name: caseId
+        in: path
         required: true
-        schema:
-          type: "array"
+    post:
+      summary: create shipment
+      tags:
+        - shipments
+      requestBody:
+        description: Shipment to create
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Shipment'
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: 'invalid input, object invalid'
+        '404':
+          description: case not found
+      operationId: create-shipment
+      description: Create shipment for the specific case
+components:
+  schemas:
+    BaseResponse:
+      title: BaseResponse
+      type: object
+      x-examples:
+        Example 1:
+          message: Request successful
+          success: true
+      properties:
+        message:
+          type: string
+          x-stoplight:
+            id: ch53fxz5pkxxz
+          example: Request successful
+        success:
+          type: boolean
+          x-stoplight:
+            id: 1j33hnjtf759y
+          default: true
+    Case:
+      type: object
+      x-examples:
+        Example 1:
+          clinicId: 659f84bf50fdcfa81d600a9c
+          doctorName: XXXXXXXXXX
+          doctorEmail: doctorpo@inteware.com.tw
+          caseId: 669faab5497a45276e46122b
+          orderId: 66c2e483b2ca506ca3176844
+          patientId: 93415931A
+          patientFirstname: Tony
+          patientLastname: Jaa
+          deliveryName: Phase Ortho company
+          deliveryAddress1: 2501 Stanley Gault Pkwy
+          deliveryAddress2: ABC Building room39
+          deliveryCity: Taipei
+          deliveryState: California
+          deliveryZipCode: '50390'
+          deliveryCountry: USA
+          dueDate: '2024-12-31'
+          doctorNote: Please contact me back
+          maxillaSteps:
+            - step: 1-0
+              productCode:
+                - PCOA
+            - step: '1'
+              productCode:
+                - PCOA
+            - step: '2'
+              productCode:
+                - PCOA
+          mandibleSteps:
+            - step: 1-0
+              productCode:
+                - PCOA
+            - step: '1'
+              productCode:
+                - PCOA
+      properties:
+        clinicId:
+          type: string
+          example: 659f84bf50fdcfa81d600a9c
+        doctorName:
+          type: string
+          example: Doctorpo
+        doctorEmail:
+          type: string
+          example: doctorpo@inteware.com.tw
+        caseId:
+          type: string
+          example: 669faab5497a45276e46122b
+        orderId:
+          type: string
+          example: 66c2e483b2ca506ca3176844
+        patientId:
+          type: string
+          example: 93415931A
+        patientFirstname:
+          type: string
+          example: Tony
+        patientLastname:
+          type: string
+          example: Jaa
+        deliveryName:
+          type: string
+          example: Phase Ortho company
+        deliveryAddress1:
+          type: string
+          example: 2501 Stanley Gault Pkwy
+        deliveryAddress2:
+          type: string
+          example: ABC Building room39
+        deliveryCity:
+          type: string
+          example: Taipei
+        deliveryState:
+          type: string
+          example: California
+        deliveryZipCode:
+          type: string
+          example: '50390'
+        deliveryCountry:
+          type: string
+          example: USA
+        dueDate:
+          type: string
+          format: date
+          example: '2024-12-31'
+        doctorNote:
+          type: string
+          example: Please contact me back
+        maxillaSteps:
+          type: array
           items:
-            $ref: "#/definitions/User"
-      responses:
-        default:
-          description: "successful operation"
-  /user/createWithList:
-    post:
-      tags:
-      - "user"
-      summary: "Creates list of users with given input array"
-      description: ""
-      operationId: "createUsersWithListInput"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "List of user object"
-        required: true
-        schema:
-          type: "array"
+            type: object
+            properties:
+              step:
+                type: string
+                example: 1-0
+              attachment:
+                type: boolean
+                example: true
+              products:
+                type: array
+                example:
+                  - PCOA
+                items:
+                  type: string
+        mandibleSteps:
+          type: array
           items:
-            $ref: "#/definitions/User"
-      responses:
-        default:
-          description: "successful operation"
-  /user/{username}:
-    get:
-      tags:
-      - "user"
-      summary: "Get user by user name"
-      description: ""
-      operationId: "getUserByName"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "username"
-        in: "path"
-        description: "The name that needs to be fetched. Use user1 for testing. "
-        required: true
-        type: "string"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/User"
-        400:
-          description: "Invalid username supplied"
-        404:
-          description: "User not found"
-    put:
-      tags:
-      - "user"
-      summary: "Updated user"
-      description: "This can only be done by the logged in user."
-      operationId: "updateUser"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "username"
-        in: "path"
-        description: "name that need to be updated"
-        required: true
-        type: "string"
-      - in: "body"
-        name: "body"
-        description: "Updated user object"
-        required: true
-        schema:
-          $ref: "#/definitions/User"
-      responses:
-        400:
-          description: "Invalid user supplied"
-        404:
-          description: "User not found"
-    delete:
-      tags:
-      - "user"
-      summary: "Delete user"
-      description: "This can only be done by the logged in user."
-      operationId: "deleteUser"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "username"
-        in: "path"
-        description: "The name that needs to be deleted"
-        required: true
-        type: "string"
-      responses:
-        400:
-          description: "Invalid username supplied"
-        404:
-          description: "User not found"
-  /user/login:
-    get:
-      tags:
-      - "user"
-      summary: "Logs user into the system"
-      description: ""
-      operationId: "loginUser"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "username"
-        in: "query"
-        description: "The user name for login"
-        required: true
-        type: "string"
-      - name: "password"
-        in: "query"
-        description: "The password for login in clear text"
-        required: true
-        type: "string"
-      responses:
-        200:
-          description: "successful operation"
-          headers:
-            X-Expires-After:
-              type: "string"
-              format: "date-time"
-              description: "date in UTC when token expires"
-            X-Rate-Limit:
-              type: "integer"
-              format: "int32"
-              description: "calls per hour allowed by the user"
-          schema:
-            type: "string"
-        400:
-          description: "Invalid username/password supplied"
-  /user/logout:
-    get:
-      tags:
-      - "user"
-      summary: "Logs out current logged in user session"
-      description: ""
-      operationId: "logoutUser"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters: []
-      responses:
-        default:
-          description: "successful operation"
-  /user:
-    post:
-      tags:
-      - "user"
-      summary: "Create user"
-      description: "This can only be done by the logged in user."
-      operationId: "createUser"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "Created user object"
-        required: true
-        schema:
-          $ref: "#/definitions/User"
-      responses:
-        default:
-          description: "successful operation"
-securityDefinitions:
-  api_key:
-    type: "apiKey"
-    name: "api_key"
-    in: "header"
-  petstore_auth:
-    type: "oauth2"
-    authorizationUrl: "https://petstore.swagger.io/oauth/authorize"
-    flow: "implicit"
-    scopes:
-      read:pets: "read your pets"
-      write:pets: "modify pets in your account"
-definitions:
-  ApiResponse:
-    type: "object"
-    properties:
-      code:
-        type: "integer"
-        format: "int32"
-      type:
-        type: "string"
-      message:
-        type: "string"
-  Category:
-    type: "object"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      name:
-        type: "string"
-    xml:
-      name: "Category"
-  Pet:
-    type: "object"
-    required:
-    - "name"
-    - "photoUrls"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      category:
-        $ref: "#/definitions/Category"
-      name:
-        type: "string"
-        example: "doggie"
-      photoUrls:
-        type: "array"
-        xml:
-          wrapped: true
-        items:
-          type: "string"
-          xml:
-            name: "photoUrl"
-      tags:
-        type: "array"
-        xml:
-          wrapped: true
-        items:
-          xml:
-            name: "tag"
-          $ref: "#/definitions/Tag"
-      status:
-        type: "string"
-        description: "pet status in the store"
-        enum:
-        - "available"
-        - "pending"
-        - "sold"
-    xml:
-      name: "Pet"
-  Tag:
-    type: "object"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      name:
-        type: "string"
-    xml:
-      name: "Tag"
-  Order:
-    type: "object"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      petId:
-        type: "integer"
-        format: "int64"
-      quantity:
-        type: "integer"
-        format: "int32"
-      shipDate:
-        type: "string"
-        format: "date-time"
-      status:
-        type: "string"
-        description: "Order Status"
-        enum:
-        - "placed"
-        - "approved"
-        - "delivered"
-      complete:
-        type: "boolean"
-    xml:
-      name: "Order"
-  User:
-    type: "object"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      username:
-        type: "string"
-      firstName:
-        type: "string"
-      lastName:
-        type: "string"
-      email:
-        type: "string"
-      password:
-        type: "string"
-      phone:
-        type: "string"
-      userStatus:
-        type: "integer"
-        format: "int32"
-        description: "User Status"
-    xml:
-      name: "User"
-externalDocs:
-  description: "Find out more about Swagger"
-  url: "http://swagger.io"
+            type: object
+            properties:
+              step:
+                type: string
+                example: 1-0
+              attachment:
+                type: boolean
+                example: false
+              products:
+                type: array
+                example:
+                  - PCOA
+                items:
+                  type: string
+    Product:
+      title: Product
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          type: string
+          x-stoplight:
+            id: aecu04poe97gi
+        productType:
+          type: string
+          x-stoplight:
+            id: iuw3j87rai3uz
+    Shipment:
+      title: Shipment
+      type: object
+      x-examples: {}
+      properties:
+        caseId:
+          type: string
+          example: '115345'
+        caseCharge:
+          type: number
+          x-stoplight:
+            id: vou2c6cxw19mf
+          format: float
+          example: 99.55
+        allignerThickness:
+          type: array
+          x-stoplight:
+            id: purucyc4iusaw
+          items:
+            x-stoplight:
+              id: rk89h2b9moltf
+            type: object
+            properties:
+              shade:
+                type: string
+                example: U01
+              thickness:
+                type: number
+                x-stoplight:
+                  id: 7lbcdb8hwf02h
+                format: float
+                example: 0.25
+        shippingInfo:
+          type: string
+          x-stoplight:
+            id: jfdytdc1gzumw
+          example: US1233445
+        shippingRemark:
+          type: string
+          x-stoplight:
+            id: i62j09fc3y6ba
+          example: Some remark
+        shippingPhoto:
+          type: string
+          x-stoplight:
+            id: ps81iv2jhbygh
+          format: binary
+        shippingDocument:
+          type: string
+          x-stoplight:
+            id: gbd7iuzpstx5f
+          format: binary
+  responses: {}
+  securitySchemes:
+    apiKey_1:
+      name: apiKey
+      type: apiKey
+      in: query
